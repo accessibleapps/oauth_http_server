@@ -1,11 +1,16 @@
 from logging import getLogger
 logger = getLogger('oauth_http_server')
-
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+try:
+	from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+except ImportError:
+	from http.server import HTTPServer, BaseHTTPRequestHandler
 import socket
 import traceback
 import threading
-import urlparse
+try:
+	import urlparse
+except ImportError:
+	from urllib import parse as urlparse
 
 def find_unused_port ():
  sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
