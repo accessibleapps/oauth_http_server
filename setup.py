@@ -4,7 +4,7 @@ __doc__ = """A simple http server for parsing oauth callbacks for desktop apps p
 
 setup(
  name = 'oauth_http_server',
- version = 0.1,
+ version = 0.11,
  description = __doc__,
  py_modules = ['oauth_http_server'],
  classifiers = [
