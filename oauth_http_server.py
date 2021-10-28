@@ -29,7 +29,7 @@ class OAuthHandler(BaseHTTPRequestHandler):
   if path[0] != 'oauth':
    raise ValueError("Unable to process non-OAuth request.")
   callback_data = "?".join(path[1].split('?')[1:])
-  parsed_data = {k: v[0] for k, v in urlparse.parse_qs(callback_data).iteritems()}
+  parsed_data = {k: v[0] for k, v in urlparse.parse_qs(callback_data).items()}
   try:
    self.server.callback(parsed_data)
   except Exception as e:
