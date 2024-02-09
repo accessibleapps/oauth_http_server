@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import io
 __doc__ = """A simple http server for parsing oauth callbacks for desktop apps pretending to be webapps"""
-readme = io.open('README.rst', encoding='utf-8').read()
+readme = io.open('README.md', encoding='utf-8').read()
 setup(
     name='oauth_http_server',
     version='1.1.0',
