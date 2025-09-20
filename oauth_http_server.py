@@ -3,7 +3,8 @@ import traceback
 import socket
 from logging import getLogger
 from typing import Callable, Optional, Dict, Any, Type
-logger = getLogger('oauth_http_server')
+
+logger = getLogger("oauth_http_server")
 try:
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler  # type: ignore
 except ImportError:
@@ -16,7 +17,7 @@ except ImportError:
 
 def find_unused_port() -> int:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
-    sock.bind(('', 0))
+    sock.bind(("", 0))
     sock.listen(socket.SOMAXCONN)
     ipaddr, port = sock.getsockname()
     sock.close()
@@ -24,18 +25,16 @@ def find_unused_port() -> int:
 
 
 class OAuthHandler(BaseHTTPRequestHandler):
-
     def do_GET(self) -> None:
-        path = [i for i in self.path.split('/') if i]
+        path = [i for i in self.path.split("/") if i]
         logger.debug("Path: %s" % path)
-        if path[0] != 'oauth':
+        if path[0] != "oauth":
             raise ValueError("Unable to process non-OAuth request.")
-        callback_data = "?".join(path[1].split('?')[1:])
-        parsed_data = {k: v[0]
-                       for k, v in urlparse.parse_qs(callback_data).items()}
+        callback_data = "?".join(path[1].split("?")[1:])
+        parsed_data = {k: v[0] for k, v in urlparse.parse_qs(callback_data).items()}
         try:
             self.server.callback(parsed_data)
-        except Exception as e:
+        except Exception:
             logger.exception("Error calling oAuth login callback.")
             self.send_response(500)
             self.end_headers()
@@ -52,7 +51,13 @@ class OAuthHandler(BaseHTTPRequestHandler):
 class OAuthServer(HTTPServer):
     allow_reuse_address = 0
 
-    def __init__(self, host: str = 'localhost', port: Optional[int] = None, handler_class: Type[BaseHTTPRequestHandler] = OAuthHandler, callback: Optional[Callable[[Dict[str, Any]], None]] = None) -> None:
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: Optional[int] = None,
+        handler_class: Type[BaseHTTPRequestHandler] = OAuthHandler,
+        callback: Optional[Callable[[Dict[str, Any]], None]] = None,
+    ) -> None:
         if not callable(callback):
             raise TypeError("Must provide a callable callback.")
         if port is None:
@@ -63,10 +68,9 @@ class OAuthServer(HTTPServer):
         self.callback = callback
 
     def get_oauth_callback_url(self) -> str:
-        return 'http://%s:%d/oauth/callback' % (self.host, self.port)
+        return "http://%s:%d/oauth/callback" % (self.host, self.port)
 
-    success_msg = \
-        """
+    success_msg = """
 <html>
 <head>
 <title>Successful login!</title>
