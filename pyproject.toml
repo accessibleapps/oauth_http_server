@@ -44,3 +44,8 @@ warn_no_return = true
 warn_unreachable = false
 strict_equality = true
 show_error_codes = true
+
+[dependency-groups]
+dev = [
+    "mypy>=0.991",
+]
