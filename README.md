@@ -1,28 +1,41 @@
-# oauth_http_server Python Package
-*A simple http server for parsing oauth callbacks for desktop apps pretending to be webapps*
+# oauth_http_server
 
-## Overview
-This package provides an `OAuthServer` class that simulates server operations for OAuth authentication. It's primarily intended for use with desktop applications that need to pretend to be web applications for the sake of OAuth.
+A simple HTTP server for parsing OAuth callbacks for desktop apps.
 
-The server uses a simple HTTP server to listen for and process OAuth callbacks. When a client connects to the server and sends a GET request, the server will validate the request, parse the callback data, and then call the registered callback function with the parsed data.
+## What it does
 
-## Usage 
+Desktop applications often need to authenticate with OAuth providers that only support web-based redirects. This package creates a temporary local HTTP server to receive OAuth callback URLs, making it possible for desktop apps to complete OAuth flows.
 
-A basic usage of the `oauth_http_server` package might look something like this:
+## Installation
+
+```bash
+pip install -e .
+```
+
+## Usage
 
 ```python
 from oauth_http_server import OAuthServer
 
-def callback(data):
-    print('OAuth data received:', data)
+def handle_oauth_response(data):
+    print(f"Received OAuth data: {data}")
 
-server = OAuthServer(callback=callback)
-print('OAuth callback URL:', server.get_oauth_callback_url())
+server = OAuthServer(callback=handle_oauth_response)
+callback_url = server.get_oauth_callback_url()
+print(f"Use this callback URL: {callback_url}")
+
+# Start the server and wait for OAuth callback
 server.serve_forever()
 ```
 
-## Contributing
-Contributions to improve the `oauth_http_server` are welcomed. Please feel free to open issues through GitHub or submit a pull request if you have a feature or bugfix.
+## API
 
-## License
-This project is licensed under the MIT License. See `LICENSE` for more details.
+`OAuthServer(host='localhost', port=None, callback=None)`
+
+- `host`: Server hostname (default: 'localhost')
+- `port`: Server port (default: automatically finds unused port)
+- `callback`: Function to call with parsed OAuth data
+
+`get_oauth_callback_url()`: Returns the full callback URL to use with OAuth providers
+
+The server automatically shuts down after receiving a callback.
